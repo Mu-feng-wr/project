@@ -3,7 +3,18 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export const constantRoutes = []
+export const constantRoutes = [
+  {
+    path: '/login', // 登录
+    component: () => import('@/views/login/index.vue'),
+    hidden: true
+  },
+  {
+    path: '/home', // 登录
+    component: () => import('@/views/home/index.vue'),
+    hidden: true
+  }
+]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support

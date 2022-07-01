@@ -1,10 +1,9 @@
 import router from './router'
-import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { getToken, getUserId } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-
+import { getUserInfo } from '@/api/user.js'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
@@ -14,28 +13,19 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
   const hasToken = getToken()
   if (hasToken) {
+    getUserInfo({ id: getUserId() })
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done()
+    } else if (to.path === '/') {
+      next('/home')
     } else {
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
-        next()
-      } else {
-        try {
-          next({ ...to, replace: true })
-        } catch (error) {
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
-        }
-      }
+      next()
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
       next(`/login`)
-      NProgress.done()
     }
   }
 })
