@@ -10,7 +10,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/home', // 登录
+    path: '/home', // 主页
     component: () => import('@/views/home/index.vue'),
     hidden: true
   }

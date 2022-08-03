@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, removeUserId, removeToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -45,6 +45,21 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     if (res.code !== 200) {
+      if (res.code === 403) {
+        MessageBox.confirm('登录过期，请重新登录！', {
+          confirmButtonText: '确认',
+          showCancelButton: false,
+          closeOnClickModal: false,
+          closeOnPressEscape: false,
+          showClose: false,
+          type: 'warning'
+        }).then(() => {
+          removeToken()
+          removeUserId()
+          location.reload()
+        })
+        return
+      }
       Message({
         message: res.message || 'Error',
         type: 'error',

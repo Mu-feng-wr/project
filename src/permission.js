@@ -1,4 +1,5 @@
 import router from './router'
+import store from '@/store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken, getUserId } from '@/utils/auth' // get token from cookie
@@ -13,7 +14,15 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
   const hasToken = getToken()
   if (hasToken) {
-    getUserInfo({ id: getUserId() })
+    console.log(store)
+    getUserInfo({ id: getUserId() }).then(res => {
+      store.commit('SET_USERID', getUserId())
+      store.commit('SET_TOKEN', getToken())
+      store.commit('SET_SEX', res.data.sex)
+      store.commit('SET_TYPE', res.data.type)
+      store.commit('SET_USER', res.data.user)
+      store.commit('SET_USERNAME', res.data.userName)
+    })
     if (to.path === '/login') {
       next({ path: '/' })
     } else if (to.path === '/') {

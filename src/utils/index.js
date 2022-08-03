@@ -355,3 +355,61 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+export function changeToTreeData(data, autoId = 'id', pname = 'pid') {
+  var dataObj = {}
+  const list = data.map(item => item)
+  list.forEach((item) => {
+    dataObj[item.id] = item
+    dataObj[item[autoId]] = item
+  })
+  list.forEach((item) => {
+    if (item[pname] && dataObj[item[pname]]) {
+      if (!dataObj[item[pname]].children) {
+        dataObj[item[pname]].children = []
+      }
+      dataObj[item[pname]].children.push(item)
+      // 默认关闭
+      // dataObj[item[pname]].state = 'closed'
+    }
+  })
+  var i = 0
+  while (list.length > i) {
+    if (list[i][pname] && dataObj[list[i][pname]]) {
+      list.splice(i, 1)
+    } else {
+      i++
+    }
+  }
+  return list
+}
+
+export function fmoney(s, n = 2) {
+  if (!s) {
+    s = 0
+  }
+  var b = parseFloat(s)
+  n = n > 0 && n <= 20 ? n : 2
+  if (b < 0) {
+    s = (-1 * parseFloat((s + '').replace(/[^\d\.-]/g, ''))).toFixed(n) + ''
+  } else {
+    s = parseFloat((s + '').replace(/[^\d\.-]/g, '')).toFixed(n) + ''
+  }
+  var l = s.split('.')[0].split('').reverse()
+  var r = s.split('.')[1]
+  var t = ''
+  for (var i = 0; i < l.length; i++) {
+    t += l[i] + ((i + 1) % 3 === 0 && (i + 1) !== l.length ? ',' : '')
+  }
+  if (b < 0) {
+    return '-' + t.split('').reverse().join('') + '.' + r
+  } else {
+    return t.split('').reverse().join('') + '.' + r
+  }
+}
+
+export function DELMoneyFormat(str) {
+  str = str.replace(/[ ]/g, '')// 去除空格
+  str = str.replace(/,/gi, '')
+  return str
+}

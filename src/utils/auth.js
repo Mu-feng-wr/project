@@ -17,3 +17,6 @@ export function setUserId(userId) {
 export function getUserId() {
   return window.localStorage.getItem('userId')
 }
+export function removeUserId() {
+  return window.localStorage.setItem('userId', '')
+}
